@@ -11,7 +11,7 @@ import SwiftUI
 struct VoiceJournalAppApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+//            ContentView()
         }
     }
 }
