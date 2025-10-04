@@ -16,7 +16,7 @@ class RecordingViewModel: NSObject {
     var recordingState: RecordingState = .idle
     var transcribedText: String = ""
     var generatedTitle: String = ""
-    
+
     private var activity: Activity<RecordingActivityAttributes>?
     private var startDate: Date?
     
@@ -112,7 +112,6 @@ class RecordingViewModel: NSObject {
         stopLiveActivity()
     }
     
-    // MARK: - Live Activities
     private func startLiveActivity() {
         let attributes = RecordingActivityAttributes(name: "Voice Journal")
         let initialState = RecordingActivityAttributes.ContentState(isRecording: true, elapsedTime: 0)

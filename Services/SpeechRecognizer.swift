@@ -16,6 +16,7 @@ final class SpeechRecognizer {
     
     init(locale: Locale = Locale(identifier: "en-US")) {
         self.recognizer = SFSpeechRecognizer(locale: locale)
+        self.recognizer?.defaultTaskHint = .dictation
     }
     
     func requestAuthorization(completion: @escaping (SFSpeechRecognizerAuthorizationStatus) -> Void) {
@@ -26,19 +27,24 @@ final class SpeechRecognizer {
         }
     }
     
-    func startRecognition(onText: @escaping (String, Bool) -> Void) -> SFSpeechAudioBufferRecognitionRequest? {
+    func startRecognition(onText: @escaping (String, Bool) -> Void,
+                          onRestart: (() -> Void)? = nil) -> SFSpeechAudioBufferRecognitionRequest? {
+        
         recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
         guard let recognitionRequest, let recognizer = recognizer else { return nil }
-        
         recognitionRequest.shouldReportPartialResults = true
-        
-        recognitionTask = recognizer.recognitionTask(with: recognitionRequest) { result, error in
+        recognitionRequest.requiresOnDeviceRecognition = false
+        recognitionTask = recognizer.recognitionTask(with: recognitionRequest) { [weak self] result, error in
+            guard let self else { return }
+            
             if let result = result {
                 onText(result.bestTranscription.formattedString, result.isFinal)
             }
-            
             if error != nil || (result?.isFinal ?? false) {
                 self.stopRecognition()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    onRestart?()
+                }
             }
         }
         

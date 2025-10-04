@@ -62,3 +62,4 @@ struct RecordingActivityWidget: Widget {
     }
 }
 
+

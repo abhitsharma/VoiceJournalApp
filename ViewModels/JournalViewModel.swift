@@ -12,6 +12,9 @@ import SwiftData
 class JournalViewModel {
     var entries: [JournalEntry] = []
     var context: ModelContext?
+    var generatedTitle: String = ""
+      var transcribedText: String = ""
+      var recordingState: RecordingState = .idle
     
     init(context: ModelContext? = nil) {
         self.context = context
@@ -43,4 +46,10 @@ class JournalViewModel {
         try? context.save()
         loadEntries()
     }
+    
+    func reset() {
+            generatedTitle = ""
+            transcribedText = ""
+            recordingState = .idle
+        }
 }
